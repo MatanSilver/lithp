@@ -90,7 +90,7 @@ def('readfile', function(filepath) return read_file(filepath[1]) end)
 def('readfilelines', function(filepath)
   return read_file_lines(filepath[1])
 end)
-def('loop', function(...)
+def('map', function(...)
   local args = ...
   local func = args[1]
   local iterable = args[2]
