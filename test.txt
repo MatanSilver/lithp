@@ -1,2 +1,6 @@
-(+ 10 2)
-(% 9.3 4)
+(+ 1 2 3)
+(loop not '(true true false))
+(reverse '("this is a test", '(1 2 3 4)))
+(reverse '(1 2 3 4))
+
+(loop reverse (readfilelines "test.txt"))

@@ -42,15 +42,6 @@ reduce = function(f, list)
   return head
 end
 
-def = function(k, v) _G[k] = v end
-def('+',   function(...) return reduce(function(a, b) return a + b end, ...) end)
-def('-',   function(...) return reduce(function(a, b) return a - b end, ...) end)
-def('*',   function(...) return reduce(function(a, b) return a * b end, ...) end)
-def('/',   function(...) return reduce(function(a, b) return a / b end, ...) end)
-def('%',   function(...) return reduce(function(a, b) return a % b end, ...) end)
-def('str', function(...) return reduce(function(a, b) return tostring(a)..tostring(b) end, ...) end)
-def('not', function(a) return not a end)
-
 function file_exists(file)
   local f = io.open(file, "rb")
   if f then f:close() end
@@ -64,6 +55,52 @@ local function read_file(path)
     file:close()
     return content
 end
+
+local function read_file_lines(path)
+  lines = {}
+  for line in io.lines(path) do
+    lines[#lines + 1] = line
+  end
+  return lines
+end
+
+def = function(k, v) _G[k] = v end
+def('+',   function(...) return reduce(function(a, b) return a + b end, ...) end)
+def('-',   function(...) return reduce(function(a, b) return a - b end, ...) end)
+def('*',   function(...) return reduce(function(a, b) return a * b end, ...) end)
+def('/',   function(...) return reduce(function(a, b) return a / b end, ...) end)
+def('%',   function(...) return reduce(function(a, b) return a % b end, ...) end)
+def('str', function(...) return reduce(function(a, b) return tostring(a)..tostring(b) end, ...) end)
+def('not', function(a) return not a end)
+def('reverse', function(a)
+  if type(a) == "string" then
+    return string.reverse(a)
+  elseif type(a) == "table" then
+    --pretty.dump(a[1])
+    b = a[1]
+    for k=1,#b/2 do
+      tmp = b[k]
+      b[k] = b[#b - k+1]
+      b[#b - k+1] = tmp
+    end
+    return a[1]
+  end
+end)
+def('readfile', function(filepath) return read_file(filepath[1]) end)
+def('readfilelines', function(filepath)
+  return read_file_lines(filepath[1])
+end)
+def('loop', function(...)
+  local args = ...
+  local func = args[1]
+  local iterable = args[2]
+  for k,v in pairs(iterable) do
+    iterable[k] = func(v)
+  end
+  return iterable
+end)
+
+
 
 local argparser = argparse("lithp", "A simple lisp written with lpeg")
 argparser:option("-f --file", "Input file.")
