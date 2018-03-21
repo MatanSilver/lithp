@@ -71,7 +71,6 @@ argparser:option("-s --string", "Input string.")
 
 local args = argparser:parse()
 if args['file'] ~= nil and file_exists(args['file']) then
-  print(read_file(args['file']))
   pretty.dump(parser:match(read_file(args['file'])))
 elseif args['string'] ~= nil then
   pretty.dump(parser:match(args['string']))
